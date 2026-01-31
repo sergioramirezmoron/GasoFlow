@@ -3,8 +3,11 @@ import { FilterBar } from "./components/FilterBar";
 import { useGasStations } from "./hooks/useGasStations";
 import LoadingFallback from "./components/LoadingFallback";
 import Header from "./components/Header";
+import { useNetwork } from "./hooks/useNetwork";
+import { OfflineScreen } from "./components/OfflineScreen";
 
 const App = () => {
+  const isOnline = useNetwork();
   const {
     loading,
     stations,
@@ -16,6 +19,10 @@ const App = () => {
     loadingLocation,
     handleManualProvinceChange,
   } = useGasStations();
+
+  if (!isOnline) {
+    return <OfflineScreen />;
+  }
 
   return (
     <div className="bg-slate-50 min-h-screen font-sans selection:bg-blue-100">
