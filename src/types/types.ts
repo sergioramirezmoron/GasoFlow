@@ -50,6 +50,7 @@ export interface CleanGasStation {
   priceNaturalGas: number;
   lat: number;
   lng: number;
+  distance?: number;
 }
 
 export type FuelType = "all" | "diesel" | "95" | "98" | "licuated" | "natural";

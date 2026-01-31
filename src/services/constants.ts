@@ -1,4 +1,5 @@
 const PROVINCIAS = [
+  { id: "spain", name: "🇪🇸 Toda España (Auto)" },
   { id: "04", name: "Almería" },
   { id: "11", name: "Cádiz" },
   { id: "14", name: "Córdoba" },

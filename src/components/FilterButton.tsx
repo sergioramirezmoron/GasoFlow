@@ -18,7 +18,7 @@ const FilterButton = ({
   return (
     <button
       onClick={() => onClick(type)}
-      className={`px-4 py-2 rounded-full font-medium text-sm transition-all whitespace-nowrap ${
+      className={`px-4 py-2 rounded-full font-medium text-sm transition-all whitespace-nowrap hover:cursor-pointer ${
         currentType === type
           ? `${activeColor} text-white shadow-md transform scale-105`
           : "bg-gray-100 text-gray-500 hover:bg-gray-200"

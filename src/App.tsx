@@ -5,17 +5,31 @@ import LoadingFallback from "./components/LoadingFallback";
 import Header from "./components/Header";
 
 const App = () => {
-  const { loading, stations, totalCount, municipalities, filters } =
-    useGasStations();
+  const {
+    loading,
+    stations,
+    totalCount,
+    municipalities,
+    filters,
+    toggleLocation,
+    userLocation,
+    loadingLocation,
+    handleManualProvinceChange,
+  } = useGasStations();
 
   return (
     <div className="bg-slate-50 min-h-screen font-sans selection:bg-blue-100">
       <Header />
+
       <main className="max-w-6xl mx-auto px-4 -mt-16 pb-20">
         <FilterBar
           filters={filters}
           municipalities={municipalities}
           loading={loading}
+          onLocationToggle={toggleLocation}
+          userLocation={userLocation}
+          loadingLocation={loadingLocation}
+          onProvinceChange={handleManualProvinceChange}
         />
 
         {loading ? (
@@ -38,8 +52,21 @@ const App = () => {
             ) : (
               <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-300">
                 <p className="text-slate-400 text-xl font-medium">
-                  No hay nada por aquí...
+                  No hay nada por aquí... 🏜️
                 </p>
+                <p className="text-slate-400 text-sm mt-2">
+                  Prueba a cambiar los filtros o ampliar la búsqueda.
+                </p>
+                <button
+                  onClick={() => {
+                    filters.setMunicipality("all");
+                    filters.setFuelType("all");
+                    filters.setSearch("");
+                  }}
+                  className="mt-6 px-6 py-2 bg-blue-50 text-blue-600 font-bold rounded-full hover:bg-blue-100 transition"
+                >
+                  Limpiar filtros
+                </button>
               </div>
             )}
           </>
