@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { fetchGasStations } from "../services/api";
 import { calculateDistance, getUserLocation } from "../services/geo";
 import type { CleanGasStation, FuelType } from "../types/types";
@@ -10,11 +10,10 @@ export const useGasStations = () => {
   const [municipality, setMunicipality] = useState("all");
   const [fuelType, setFuelType] = useState<FuelType>("all");
   const [search, setSearch] = useState("");
-  const [userLocation, setUserLocation] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [loadingLocation, setLoadingLocation] = useState(false);
+
+  const locationRequestActive = useRef(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -22,17 +21,16 @@ export const useGasStations = () => {
       try {
         let url = "";
         if (provinceId === "spain") {
-          url =
-            "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/";
+           url = "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/";
         } else {
-          url = `https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroProvincia/${provinceId}`;
+           url = `https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroProvincia/${provinceId}`;
         }
 
         const data = await fetchGasStations(url);
         setGasStations(data);
-
+        
         if (!userLocation) {
-          setMunicipality("all");
+            setMunicipality("all");
         }
       } catch (error) {
         console.error("Error fetching stations:", error);
@@ -42,37 +40,53 @@ export const useGasStations = () => {
     };
 
     loadData();
-  }, [provinceId]);
+  }, [provinceId]); 
 
   const toggleLocation = async () => {
+    if (loadingLocation) {
+        locationRequestActive.current = false;
+        setLoadingLocation(false);
+        return;
+    }
+
     if (userLocation) {
-      setLoadingLocation(true);
-
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      setLoadingLocation(false);
-
-      setUserLocation(null);
-      setProvinceId("28");
-      return;
+        setLoadingLocation(true);
+        await new Promise(resolve => setTimeout(resolve, 300));
+        setLoadingLocation(false); 
+        
+        setUserLocation(null);
+        setProvinceId("28"); 
+        return;
     }
 
     setLoadingLocation(true);
+    locationRequestActive.current = true;
+
     try {
       const location = await getUserLocation();
+
+      if (!locationRequestActive.current) {
+          return;
+      }
+
       setUserLocation(location);
       setProvinceId("spain");
       setMunicipality("all");
     } catch (error) {
-      console.error(error);
-      alert("Necesitamos permiso de ubicación para encontrar las cercanas.");
+      if (locationRequestActive.current) {
+          console.error(error);
+          alert("No se pudo obtener la ubicación o el permiso fue denegado.");
+      }
     } finally {
-      setLoadingLocation(false);
+      if (locationRequestActive.current) {
+          setLoadingLocation(false);
+      }
     }
   };
 
   const handleManualProvinceChange = (newProvinceId: string) => {
-    setProvinceId(newProvinceId);
-    setUserLocation(null);
+      setProvinceId(newProvinceId);
+      setUserLocation(null);
   };
 
   const filteredStations = useMemo(() => {
@@ -84,7 +98,7 @@ export const useGasStations = () => {
             userLocation.lat,
             userLocation.lng,
             station.lat,
-            station.lng,
+            station.lng
           ),
         };
       }
@@ -97,8 +111,7 @@ export const useGasStations = () => {
       if (fuelType === "diesel" && station.priceDiesel <= 0) return false;
       if (fuelType === "95" && station.price95 <= 0) return false;
       if (fuelType === "98" && station.price98 <= 0) return false;
-      if (fuelType === "licuated" && station.priceLicuatedGas <= 0)
-        return false;
+      if (fuelType === "licuated" && station.priceLicuatedGas <= 0) return false;
       if (fuelType === "natural" && station.priceNaturalGas <= 0) return false;
 
       if (userLocation && station.distance && station.distance > 20) {
@@ -120,15 +133,10 @@ export const useGasStations = () => {
       if (fuelType === "diesel") return a.priceDiesel - b.priceDiesel;
       if (fuelType === "95") return a.price95 - b.price95;
       if (fuelType === "98") return a.price98 - b.price98;
-      if (fuelType === "licuated")
-        return a.priceLicuatedGas - b.priceLicuatedGas;
+      if (fuelType === "licuated") return a.priceLicuatedGas - b.priceLicuatedGas;
       if (fuelType === "natural") return a.priceNaturalGas - b.priceNaturalGas;
-
-      if (
-        userLocation &&
-        a.distance !== undefined &&
-        b.distance !== undefined
-      ) {
+      
+      if (userLocation && a.distance !== undefined && b.distance !== undefined) {
         return a.distance - b.distance;
       }
 
@@ -150,7 +158,7 @@ export const useGasStations = () => {
     userLocation,
     toggleLocation,
     loadingLocation,
-    handleManualProvinceChange,
+    handleManualProvinceChange, 
     filters: {
       provinceId,
       setProvinceId,
