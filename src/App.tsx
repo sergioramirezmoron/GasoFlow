@@ -5,6 +5,7 @@ import LoadingFallback from "./components/LoadingFallback";
 import Header from "./components/Header";
 import { useNetwork } from "./hooks/useNetwork";
 import { OfflineScreen } from "./components/OfflineScreen";
+import { DonateButton } from "./components/DonateButton";
 
 const App = () => {
   const isOnline = useNetwork();
@@ -48,11 +49,20 @@ const App = () => {
             </div>
 
             {stations.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
-                {stations.map((station) => (
-                  <StationCard key={station.id} station={station} />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+                  {stations.map((station) => (
+                    <StationCard key={station.id} station={station} />
+                  ))}
+                </div>
+
+                <div className="mt-10 mb-4 border-t border-slate-200 pt-8">
+                  <p className="text-center text-slate-400 text-sm mb-2">
+                    ¿Te ha sido útil?
+                  </p>
+                  <DonateButton />
+                </div>
+              </>
             ) : (
               <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-300">
                 <p className="text-slate-400 text-xl font-medium">
@@ -64,10 +74,12 @@ const App = () => {
                     filters.setFuelType("all");
                     filters.setSearch("");
                   }}
-                  className="mt-6 px-6 py-2 bg-blue-50 text-blue-600 font-bold rounded-full hover:bg-blue-100 transition"
+                  className="mt-6 px-6 py-2 bg-blue-50 text-blue-600 font-bold rounded-full hover:bg-blue-100 transition mb-8"
                 >
                   Limpiar filtros
                 </button>
+
+                <DonateButton />
               </div>
             )}
           </>
