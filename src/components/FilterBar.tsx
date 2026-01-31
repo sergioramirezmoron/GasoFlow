@@ -47,11 +47,12 @@ export const FilterBar = ({
       <div className="mb-4">
         <button
           onClick={onLocationToggle}
-          disabled={loadingLocation}
-          className={`w-full py-3 md:py-3.5 px-4 rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-all duration-300 ${
-            isGpsActive
-              ? "bg-red-50 text-red-600 ring-2 ring-red-100 hover:bg-red-100"
-              : "bg-linear-to-r from-blue-600 to-blue-700 text-white hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5"
+          className={`w-full py-3 md:py-3.5 px-4 rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-all duration-300 hover:cursor-pointer ${
+            loadingLocation
+              ? "bg-red-50 text-red-600 ring-2 ring-red-100 hover:bg-red-100 cursor-pointer"
+              : isGpsActive
+                ? "bg-red-50 text-red-600 ring-2 ring-red-100 hover:bg-red-100"
+                : "bg-linear-to-r from-blue-600 to-blue-700 text-white hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5"
           }`}
         >
           {loadingLocation ? (
@@ -76,7 +77,7 @@ export const FilterBar = ({
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                 ></path>
               </svg>
-              {userLocation ? "Desactivando..." : "Localizando..."}
+              {userLocation ? "Desactivando..." : "Cancelar búsqueda"}
             </>
           ) : isGpsActive ? (
             <>❌ Desactivar ubicación</>
@@ -85,7 +86,6 @@ export const FilterBar = ({
           )}
         </button>
       </div>
-
       <div className="grid grid-cols-2 md:grid-cols-12 gap-3 md:gap-4 mb-4">
         <div className="col-span-1 md:col-span-3">
           <label className="block text-[10px] md:text-xs font-bold text-slate-400 uppercase mb-1 ml-1 truncate">
