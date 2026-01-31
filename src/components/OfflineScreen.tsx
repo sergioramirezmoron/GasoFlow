@@ -1,8 +1,8 @@
 export const OfflineScreen = () => {
   return (
-    <div className="fixed inset-0 z-[100] bg-slate-900/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center animate-fade-in">
+    // Z-INDEX 9999 para que tape todo seguro
+    <div className="fixed inset-0 z-[9999] bg-slate-900/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center animate-fade-in">
       
-      {/* Icono animado */}
       <div className="bg-red-500/10 p-6 rounded-full mb-6 relative">
         <div className="absolute inset-0 bg-red-500/20 rounded-full animate-ping"></div>
         <svg 
@@ -20,19 +20,15 @@ export const OfflineScreen = () => {
       </h1>
       
       <p className="text-slate-300 text-lg max-w-sm mx-auto mb-8">
-        No podemos cargar los precios actualizados sin internet. Comprueba tu WiFi o tus datos.
+        No podemos buscar precios sin internet. Conéctate al WiFi o Datos.
       </p>
 
       <button 
         onClick={() => window.location.reload()}
-        className="px-8 py-3 bg-white text-slate-900 font-bold rounded-full hover:bg-slate-200 transition active:scale-95"
+        className="px-8 py-3 bg-white text-slate-900 font-bold rounded-full hover:bg-slate-200 transition active:scale-95 shadow-lg shadow-white/10"
       >
-        Reintentar
+        Reintentar conexión
       </button>
-
-      <p className="absolute bottom-10 text-slate-500 text-sm">
-        GasoFlow v1.0
-      </p>
     </div>
   );
 };

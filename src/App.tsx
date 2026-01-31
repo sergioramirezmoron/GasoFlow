@@ -8,6 +8,7 @@ import { OfflineScreen } from "./components/OfflineScreen";
 
 const App = () => {
   const isOnline = useNetwork();
+
   const {
     loading,
     stations,
@@ -20,12 +21,8 @@ const App = () => {
     handleManualProvinceChange,
   } = useGasStations();
 
-  if (!isOnline) {
-    return <OfflineScreen />;
-  }
-
   return (
-    <div className="bg-slate-50 min-h-screen font-sans selection:bg-blue-100">
+    <div className="bg-slate-50 min-h-screen font-sans selection:bg-blue-100 relative">
       <Header />
 
       <main className="max-w-6xl mx-auto px-4 -mt-16 pb-20">
@@ -61,9 +58,6 @@ const App = () => {
                 <p className="text-slate-400 text-xl font-medium">
                   No hay nada por aquí... 🏜️
                 </p>
-                <p className="text-slate-400 text-sm mt-2">
-                  Prueba a cambiar los filtros o ampliar la búsqueda.
-                </p>
                 <button
                   onClick={() => {
                     filters.setMunicipality("all");
@@ -79,6 +73,8 @@ const App = () => {
           </>
         )}
       </main>
+
+      {!isOnline && <OfflineScreen />}
     </div>
   );
 };
